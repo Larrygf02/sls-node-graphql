@@ -47,14 +47,12 @@ const resolvers = {
     }
   }
 }
-module.exports.hello = async event => {
+module.exports.query = async event => {
+  const result = await graphql(schema, event.body, resolvers)
   return {
     statusCode: 200,
     body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
-      },
+      result.data,
       null,
       2
     ),
