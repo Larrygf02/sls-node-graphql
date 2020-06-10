@@ -37,13 +37,20 @@ let orders = [
 
 // Resolvers
 const resolvers = {
-  product: ({ id }) => products.filter(product => product.id == id)[0],
-  order: async ({ id }) => {
-    const order = orders.filter(order => order.id == id)
-    if (order.length == 0) return null
-    return {
-      ...order,
-      product: () => products.filter(product => order.productId == id)[0]
+  Query: {
+    product: ({ id }) => {
+      console.log('ID product', id)
+      let product = products.filter(p => p.id == 1)
+      if (product.length == 0) return null 
+      return product[0]
+    },
+    order: async ({ id }) => {
+      const order = orders.filter(order => order.id == id)
+      if (order.length == 0) return null
+      return {
+        ...order,
+        product: () => products.filter(product => order.productId == id)[0]
+      }
     }
   }
 }
