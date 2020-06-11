@@ -1,7 +1,8 @@
 'use strict';
-const { graphql, buildSchema } = require('graphql')
+const { graphql } = require('graphql')
+const { makeExecutableSchema } = require('graphql-tools')
 //Schema
-const schema = buildSchema(`
+const tyDefs = `
   type Product {
     id: ID!
     name: String!
@@ -17,27 +18,30 @@ const schema = buildSchema(`
   }
 
   type Query {
+    products: [Product]
     product(id: ID!): Product
     order(id: ID!): Order
   }
-`)
-
+`
 //DummyData
 let products = [
   { id: 1, name: "Lapiz", price: "12"},
   { id: 2, name: "Borrador", price: "20"},
-  { id: 3, name: "Cuaderno", price: "30"},
+  { id: 3, name: "Cuaderno", price: "30"}
 ]
 
 let orders = [
   { id: 1, customerName: "Raul", deliveryAddress: "Address1", productId: 1, quantity: 1},
   { id: 2, customerName: "Yeli", deliveryAddress: "Address2", productId: 2, quantity: 1},
-  { id: 3, customerName: "Grecia", deliveryAddress: "Address3", productId: 2, quantity: 1},
+  { id: 3, customerName: "Grecia", deliveryAddress: "Address3", productId: 2, quantity: 1}
 ]
 
 // Resolvers
 const resolvers = {
   Query: {
+    products: () => {
+      return products;
+    },
     product: ({ id }) => {
       console.log('ID product', id)
       let product = products.filter(p => p.id == 1)
@@ -55,6 +59,11 @@ const resolvers = {
   }
 }
 
+const graphqlSchema =  makeExecutableSchema({
+  typeDefs: tyDefs,
+  resolvers
+})
+
 function get_query(event) {
   var query = null;
   let body = JSON.parse(event.body);
@@ -69,7 +78,8 @@ function get_query(event) {
 module.exports.query_graphql = async event => {
   const query = get_query(event)
   console.log("query", query)
-  const result = await graphql(schema, query, resolvers)
+  const result = await graphql(graphqlSchema, query)
+  console.log(result)
   return {
     statusCode: 200,
     body: JSON.stringify(
