@@ -7,7 +7,7 @@ provider:
 
 functions:
   query_graphql:
-    handler: handler.query
+    handler: handler.query_graphql
     events:
       - http:
           path: /graphql
