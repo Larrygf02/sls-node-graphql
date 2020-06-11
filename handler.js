@@ -54,8 +54,19 @@ const resolvers = {
     }
   }
 }
+
+function get_query(event) {
+  let body = JSON.parse(event.body);
+  if (body.query) {
+    query = body.query
+  }else{
+    throw new Error('No parameter query')
+  }
+}
 module.exports.query = async event => {
-  const result = await graphql(schema, event.body, resolvers)
+  const query = get_query(event)
+  console.log(query)
+  const result = await graphql(schema, query, resolvers)
   return {
     statusCode: 200,
     body: JSON.stringify(
