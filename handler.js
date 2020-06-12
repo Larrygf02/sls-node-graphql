@@ -44,19 +44,20 @@ const resolvers = {
     },
     product: (_, { id }) => {
       console.log('ID product', id)
-      let product = products.filter(p => p.id == 1)
+      let product = products.filter(p => p.id == id)
       if (product.length == 0) return null 
       return product[0]
     },
     order: async (_ ,{ id }) => {
-      console.log('Entro al metodo order')
-      console.log(id)
-      const order = orders.filter(order => order.id == id)
+      let order = orders.filter(order => order.id == id)
       if (order.length == 0) return null
-      return {
+      order = order[0]
+      const product = products.filter(p => p.id == order.productId)[0]
+      const data = {
         ...order,
-        product: () => products.filter(product => order.productId == id)[0]
+        product
       }
+      return data
     }
   }
 }
