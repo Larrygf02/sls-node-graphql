@@ -42,13 +42,15 @@ const resolvers = {
     products: () => {
       return products;
     },
-    product: ({ id }) => {
+    product: (_, { id }) => {
       console.log('ID product', id)
       let product = products.filter(p => p.id == 1)
       if (product.length == 0) return null 
       return product[0]
     },
-    order: async ({ id }) => {
+    order: async (_ ,{ id }) => {
+      console.log('Entro al metodo order')
+      console.log(id)
       const order = orders.filter(order => order.id == id)
       if (order.length == 0) return null
       return {
